@@ -32,10 +32,8 @@ jobs:
         run: |
           sudo apt-get -yqq install libpq-dev
           gem install bundler -v 2.2.14
-          bundle install --jobs 4 --retry 3
           bundle exec rails db:create
           bundle exec rails db:migrate
-          bundle exec rails webpacker:install
           bundle install
 
       # - name: Rubocop Check
