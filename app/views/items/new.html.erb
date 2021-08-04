@@ -1,0 +1,18 @@
+<h1>Novo Item</h1>
+
+<%= form_with model: @item do |form| %>
+  <div>
+    <%= form.label :nome %><br>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :quantidade %><br>
+    <%= form.number_field :quantity %>
+  </div>
+  <div>
+    <%= form.submit "Atualizar" %>
+  </div>
+  <br>
+  <%= link_to "Voltar à Lista", items_path %>
+<% end %>
