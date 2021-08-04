@@ -32,7 +32,7 @@ RSpec.describe "Item", type: :request do
   end
   it 'puts update' do
     item = FactoryBot.create(:item)
-    put item_path(item.id), params: {item: {name: Faker::Commerce.product_name, quantity: Faker::Number.number(digits: 1)}}
+    put item_path(item.id), params: {item: {name: Faker::Commerce.product_name}}
     expect(response).to redirect_to item_path(item.id)
     # TODO, expect(response.status).to eq(200) understand the reason the default status response is 302 (found), moved permanentely expect(response.status).to eq(201)
   end
