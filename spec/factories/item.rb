@@ -1,6 +1,6 @@
 FactoryBot.define do
   factory :item do
-    name { "String" }
-    quantity { 10 }
+    name { Faker::Commerce.product_name }
+    quantity { Faker::Number.number(digits: 2) }
   end
 end
