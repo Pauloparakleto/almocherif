@@ -1,15 +1,37 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Almocherif</title>
-    <%= csrf_meta_tags %>
-    <%= csp_meta_tag %>
+<head>
+  <title>Almocherif</title>
+  <%= csrf_meta_tags %>
+  <%= csp_meta_tag %>
 
-    <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
-    <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
-  </head>
+  <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track': 'reload' %>
+  <%= javascript_pack_tag 'application', 'data-turbolinks-track': 'reload' %>
+  <style>
+      table {
+          font-family: arial, sans-serif;
+          border-collapse: collapse;
+          max-width: 400px;
+          min-width: 500px;
+          width: 70%;
+          display: block;
+          margin: auto;
+      }
 
-  <body>
-    <%= yield %>
-  </body>
+
+      td, th {
+          border: 1px solid #dddddd;
+          text-align: left;
+          padding: 8px;
+      }
+
+      tr:nth-child(even) {
+          background-color: #dddddd;
+      }
+  </style>
+</head>
+
+<body>
+<%= yield %>
+</body>
 </html>

@@ -1,0 +1,3 @@
+<h1><%= @item.name %></h1>
+<h2>Quantidade: <%= @item.quantity %></h2>
+<h3> <%= link_to "Deletar", item_path(@item), method: :delete, data: {confirm: "Quer mesmo deletar este item?"} %></h3>
