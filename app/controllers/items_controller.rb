@@ -27,7 +27,7 @@ class ItemsController < ApplicationController
   def update
     @item = Item.find(params[:id])
 
-    if @item.update(item_params)
+    if @item.update(item_params_update)
       redirect_to item_path @item
     else
       render :edit
@@ -47,5 +47,9 @@ class ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(:name, :quantity)
+    end
+
+  def item_params_update
+    params.require(:item).permit(:name)
   end
 end

@@ -17,13 +17,22 @@ RSpec.describe Item, type: :model do
     expect(item.count).to eq(10)
   end
 
-  it 'update quantity' do
+  it 'update name' do
     item = FactoryBot.create(:item)
 
-    quantity = item.quantity
-    item.update(quantity: 20)
+    name = item.name
+    item.update(name: "Flash Driver")
 
-    expect(item.quantity).to eq(20)
-    expect(quantity).not_to eq(item.quantity)
+    expect(item.name).to eq("Flash Driver")
+    expect(name).not_to eq(item.name)
+  end
+
+  xit 'should not update quantity' do
+    item = FactoryBot.create(:item, quantity: 30)
+
+    item.update(quantity: 15)
+
+    expect(item.valid?).to eq(false)
+    expect(item.errors.messages[:quantity].first).to eq("Você não pode atualizar quantidade a não ser mediante entrada e saída de itens!")
   end
 end
