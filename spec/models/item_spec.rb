@@ -9,7 +9,7 @@ RSpec.describe Item, type: :model do
   it 'should delete' do
     item = FactoryBot.create_list(:item, 10)
     item.second.delete
-    expect(item.count).to eq(9)
+    expect(Item.count).to eq(9)
   end
 
   it 'should create list' do
