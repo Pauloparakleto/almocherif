@@ -5,7 +5,13 @@ RSpec.describe Item, type: :model do
     item = FactoryBot.create(:item)
     expect(item).to be_truthy
   end
+  it 'should has unique name' do
+    product_name = Faker::Commerce.product_name
+    FactoryBot.create(:item, name: product_name)
+    item_second = FactoryBot.build(:item, name: product_name)
 
+    expect(item_second).not_to be_valid
+  end
   it 'should delete' do
     item = FactoryBot.create_list(:item, 10)
     item.second.delete
