@@ -1,0 +1,14 @@
+<h1>Editar Item</h1>
+
+<%= form_with model: @item do |form| %>
+  <div>
+    <%= form.label :nome %><br>
+    <%= form.text_field :name %>
+    <p>Quantidade: <%=  @item.quantity %></p>
+  </div>
+  <div>
+    <%= form.submit "Atualizar" %>
+  </div>
+  <br>
+  <%= link_to "Voltar à Lista", items_path %>
+<% end %>
