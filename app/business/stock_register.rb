@@ -5,13 +5,13 @@ class StockRegister
   end
 
   def entry
-    sum = @item.quantity + @options
+    sum = @item.quantity + @options.to_i
     @item.update(quantity: sum)
     @item
   end
 
   def exit
-    sub = @item.quantity - @options
+    sub = @item.quantity - @options.to_i
     @item.update(quantity: sub)
     @item
   end
