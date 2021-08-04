@@ -8,7 +8,8 @@ RSpec.describe "Item", type: :request do
   end
 
   it 'gets show' do
-    get item_path(1)
+    item = FactoryBot.create_list(:item, 5)
+    get item_path(item.first.id)
     expect(response).to render_template("items/show")
     expect(response.status).to eq(200)
   end
