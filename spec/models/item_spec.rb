@@ -11,6 +11,7 @@ RSpec.describe Item, type: :model do
     item_second = FactoryBot.build(:item, name: product_name)
 
     expect(item_second).not_to be_valid
+    expect(item_second.errors.messages[:name].first).to eq("Este nome já está em uso!")
   end
   it 'should delete' do
     item = FactoryBot.create_list(:item, 10)
