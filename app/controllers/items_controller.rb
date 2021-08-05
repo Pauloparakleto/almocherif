@@ -39,15 +39,26 @@ class ItemsController < ApplicationController
     if @item.destroy
       redirect_to items_path
     else
-       redirect_back fallback_location: items_path
+      redirect_back fallback_location: items_path
     end
+  end
+
+  def entry
+    @item = Item.find(params[:id])
+    StockRegister.new(item: @item, options: params[:options]).entry
+    redirect_to item_path(@item)
+  end
+
+  def exit
+    @item = Item.find(params[:id])
+    StockRegister.new(item: @item, options: params[:options]).exit
   end
 
   private
 
   def item_params
-    params.require(:item).permit(:name, :quantity)
-    end
+    params.require(:item).permit(:id, :name, :quantity)
+  end
 
   def item_params_update
     params.require(:item).permit(:name)

@@ -20,7 +20,7 @@ RSpec.describe "Item", type: :request do
     expect(response.status).to eq(200)
   end
   it 'post create' do
-    post items_path, params: {item: {name: Faker::Commerce.product_name, quantity: Faker::Number.number(digits: 2)}}
+    post items_path, params: { item: { name: Faker::Commerce.product_name, quantity: Faker::Number.number(digits: 2) } }
     expect(response).to redirect_to item_path(Item.last.id)
     #   expect(response.status).to eq(201) TODO, understand the reason the default status response is 301, moved permanentely
   end
@@ -32,7 +32,7 @@ RSpec.describe "Item", type: :request do
   end
   it 'puts update' do
     item = FactoryBot.create(:item)
-    put item_path(item.id), params: {item: {name: Faker::Commerce.product_name}}
+    put item_path(item.id), params: { item: { name: Faker::Commerce.product_name } }
     expect(response).to redirect_to item_path(item.id)
     # TODO, expect(response.status).to eq(200) understand the reason the default status response is 302 (found), moved permanentely expect(response.status).to eq(201)
   end
@@ -41,5 +41,17 @@ RSpec.describe "Item", type: :request do
     item = FactoryBot.create(:item)
     delete item_path(item.id)
     expect(response).to redirect_to items_path
+  end
+
+  it 'entry' do
+    item = FactoryBot.create(:item, quantity: 0)
+    post entry_items_path, params: { id: item.id, options: 2 }
+    expect(response.status).to eq(302)
+  end
+
+  it 'exit' do
+    item = FactoryBot.create(:item, quantity: 2)
+    post exit_items_path, params: { id: item.id, options: 2 }
+    expect(response.status).to eq(204)
   end
 end

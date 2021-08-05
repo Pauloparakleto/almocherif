@@ -2,4 +2,12 @@
 <h2>Quantidade: <%= @item.quantity %></h2>
 <h3> <%= link_to "Editar", edit_item_path(@item) %></h3>
 <h3> <%= link_to "Ir à lista", items_path %></h3>
-<h3> <%= link_to "Deletar", item_path(@item), method: :delete, data: {confirm: "Quer mesmo deletar este item?"} %></h3>
+<h3> <%= link_to "Deletar", item_path(@item), method: :delete, data: { confirm: "Quer mesmo deletar este item?" } %></h3>
+
+<%= form_with url: entry_items_path, method: :post do |form| %>
+    <%= hidden_field_tag 'id', "#{@item.id}" %><br>
+    <%= form.label :quantidade %><br>
+    <%= form.number_field :options %>
+    <%= form.submit "Dar entrada" %>
+<% end %>
+
