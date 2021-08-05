@@ -1,5 +1,15 @@
 <h1>Itens</h1>
 <%= link_to "Cadastrar Item", new_item_path %>
+
+<section><%= search_form_for @q do |f| %>
+
+    <%= f.label :name_cont %>
+    <%= f.search_field :name_cont %>
+
+    <%= f.submit %>
+  <% end %>
+</section>
+
 <section>
   <table>
     <tr>
