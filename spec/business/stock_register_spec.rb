@@ -1,6 +1,43 @@
 require 'rails_helper'
 
 RSpec.describe StockRegister do
+  context "when audited" do
+    before do
+      BusinessTime::Config.end_of_workday = "23:59 pm"
+      BusinessTime::Config.beginning_of_workday = "00:00 am"
+    end
+    it 'should be deleted' do
+      item = FactoryBot.create(:item, quantity: 0)
+      item.delete
+      expect(Item.count).to eq(0)
+    end
+
+    it 'should be audited false' do
+      item = FactoryBot.create(:item, quantity: 0)
+
+      expect(item.audited?).to eq(false)
+    end
+
+    it 'should be audited true' do
+      item = FactoryBot.create(:item, quantity: 0)
+      StockRegister.new(item: item, options: 2).entry
+      expect(item.audited?).to eq(true)
+    end
+
+    it 'should not be deleted' do
+      item = FactoryBot.create(:item, quantity: 0)
+      StockRegister.new(item: item, options: 2).entry
+      item.destroy
+      expect(item.errors.any?).to eq(true)
+    end
+
+    it 'should no be deleted on exit' do
+      item = FactoryBot.create(:item, quantity: 2)
+      StockRegister.new(item: item, options: 2).exit
+      item.destroy
+      expect(item.errors.any?).to eq(true)
+    end
+  end
   context 'when entry' do
     it '2' do
       item = FactoryBot.create(:item, quantity: 0)

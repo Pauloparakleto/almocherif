@@ -10,6 +10,7 @@ class StockRegister
 
     sum = @item.quantity + @options.to_i
     @item.update(quantity: sum)
+    @item.update(audited: true)
     @item
   end
 
@@ -26,7 +27,7 @@ class StockRegister
     return nil if sub.negative?
 
     @item.update(quantity: sub)
-
+    @item.update(audited: true)
     @item
   end
 end
