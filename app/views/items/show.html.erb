@@ -11,3 +11,9 @@
     <%= form.submit "Dar entrada" %>
 <% end %>
 
+<%= form_with url: exit_items_path, method: :post do |form| %>
+  <%= hidden_field_tag 'id', "#{@item.id}" %><br>
+  <%= form.label :quantidade %><br>
+  <%= form.number_field :options %>
+  <%= form.submit "Dar saída" %>
+<% end %>

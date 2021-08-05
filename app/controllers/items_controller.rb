@@ -52,6 +52,7 @@ class ItemsController < ApplicationController
   def exit
     @item = Item.find(params[:id])
     StockRegister.new(item: @item, options: params[:options]).exit
+    redirect_to item_path(@item)
   end
 
   private
