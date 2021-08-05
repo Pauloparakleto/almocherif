@@ -46,6 +46,7 @@ class ItemsController < ApplicationController
   def entry
     @item = Item.find(params[:id])
     StockRegister.new(item: @item, options: params[:options]).entry
+    redirect_to item_path(@item)
   end
 
   def exit
@@ -56,7 +57,7 @@ class ItemsController < ApplicationController
   private
 
   def item_params
-    params.require(:item).permit(:name, :quantity)
+    params.require(:item).permit(:id, :name, :quantity)
   end
 
   def item_params_update
