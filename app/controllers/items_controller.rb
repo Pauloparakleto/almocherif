@@ -1,6 +1,8 @@
 class ItemsController < ApplicationController
   def index
-    @items = Item.all
+    #@items = Item.all
+    @q = Item.ransack(params[:q])
+    @items = @q.result(distinct: true)
   end
 
   def show
