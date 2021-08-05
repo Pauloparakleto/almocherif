@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe StockRegister do
-  context "when entry" do
+  context 'when entry' do
     it '2' do
       item = FactoryBot.create(:item, quantity: 0)
       params = { item: item, options: 2 }
@@ -27,7 +27,14 @@ RSpec.describe StockRegister do
     end
   end
 
-  context "when exit" do
+  context 'when exit' do
+    before do
+      BusinessTime::Config.beginning_of_workday = '6:00 am'
+      BusinessTime::Config.end_of_workday = '15:00 pm'
+      @time_now = Time.new(2021, 8, 5, 10)
+      allow(Time).to receive(:now).and_return(@time_now)
+    end
+
     it '2' do
       item = FactoryBot.create(:item, quantity: 2)
       params = { item: item, options: 2 }
@@ -58,6 +65,42 @@ RSpec.describe StockRegister do
       result = StockRegister.new(params).exit
 
       expect(result).to be_nil
+    end
+  end
+
+  describe 'out of business time' do
+    context 'when exit' do
+      before do
+        BusinessTime::Config.beginning_of_workday = '9:00 am'
+        BusinessTime::Config.end_of_workday = '18:00 pm'
+        @time_now = Time.new(2021, 8, 5, 5)
+        allow(Time).to receive(:now).and_return(@time_now)
+      end
+
+      it '2' do
+        item = FactoryBot.create(:item, quantity: 2)
+        params = { item: item, options: 2 }
+        result = StockRegister.new(params).exit
+
+        expect(result).to be_nil
+      end
+    end
+
+    context 'when exit on weekend' do
+      before do
+        BusinessTime::Config.beginning_of_workday = '9:00 am'
+        BusinessTime::Config.end_of_workday = '18:00 pm'
+        @time_now = Time.new(2021, 8, 1)
+        allow(Time).to receive(:now).and_return(@time_now)
+      end
+
+      it '2' do
+        item = FactoryBot.create(:item, quantity: 2)
+        params = { item: item, options: 2 }
+        result = StockRegister.new(params).exit
+
+        expect(result).to be_nil
+      end
     end
   end
 end

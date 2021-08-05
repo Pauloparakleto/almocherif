@@ -14,12 +14,18 @@ class StockRegister
   end
 
   def exit
+    return nil if !Time.now.workday?
+
+    return nil if !Time.now.during_business_hours?
+
     return nil if @options.to_i.negative?
+
     return nil if @options.to_i.zero?
 
     sub = @item.quantity - @options.to_i
-    @item.update(quantity: sub)
     return nil if sub.negative?
+
+    @item.update(quantity: sub)
 
     @item
   end
