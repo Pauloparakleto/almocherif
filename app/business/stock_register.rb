@@ -23,8 +23,9 @@ class StockRegister
     return nil if @options.to_i.zero?
 
     sub = @item.quantity - @options.to_i
-    @item.update(quantity: sub)
     return nil if sub.negative?
+
+    @item.update(quantity: sub)
 
     @item
   end
