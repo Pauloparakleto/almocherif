@@ -52,6 +52,6 @@ RSpec.describe "Item", type: :request do
   it 'exit' do
     item = FactoryBot.create(:item, quantity: 2)
     post exit_items_path, params: { id: item.id, options: 2 }
-    expect(response.status).to eq(204)
+    expect(response.status).to eq(302)
   end
 end
