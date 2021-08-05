@@ -64,8 +64,10 @@ RSpec.describe StockRegister do
   describe 'out of business time' do
     context 'when exit' do
       before do
-        BusinessTime::Config.beginning_of_workday = '17:59 pm'
+        BusinessTime::Config.beginning_of_workday = '9:00 am'
         BusinessTime::Config.end_of_workday = '18:00 pm'
+        @time_now = Time.new(2021, 7, 5)
+        allow(Time).to receive(:now).and_return(@time_now)
       end
 
       it '2' do
