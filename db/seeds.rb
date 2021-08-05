@@ -7,4 +7,4 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 
 puts "===Módulo Item====="
-FactoryBot.create_list(:item, 10)
+FactoryBot.create_list(:item, 50)
