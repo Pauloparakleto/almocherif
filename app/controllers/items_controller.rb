@@ -38,10 +38,13 @@ class ItemsController < ApplicationController
 
   def destroy
     @item = Item.find(params[:id])
-    if @item.destroy
+    unless @item.audited?
+      @item.destroy
       redirect_to items_path
+      flash[:notice] = "Item deletado com sucesso!"
     else
       redirect_back fallback_location: items_path
+      flash[:alert] = "Não pode deletar o item, pois já está com movimentação no registro!"
     end
   end
 
