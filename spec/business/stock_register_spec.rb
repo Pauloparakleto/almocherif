@@ -1,6 +1,51 @@
 require 'rails_helper'
 
 RSpec.describe StockRegister do
+  context "when log register" do
+    before do
+      BusinessTime::Config.beginning_of_workday = "00:00 am"
+      BusinessTime::Config.end_of_workday = "23:59 pm"
+    end
+
+    it 'many entries' do
+      item = FactoryBot.create(:item, quantity: 0)
+      StockRegister.new(item: item, options: 2).entry
+      StockRegister.new(item: item, options: 2).entry
+      result = StockRegister.new(item: item, options: 2).entry
+
+      expect(result.logs.first.product_name).to eq(item.name)
+      expect(result.logs.second.product_name).to eq(item.name)
+      expect(result.logs.last.product_name).to eq(item.name)
+
+      expect(result.logs.first.quantity).to eq(2)
+      expect(result.logs.second.quantity).to eq(2)
+      expect(result.logs.last.quantity).to eq(2)
+
+      expect(result.logs.first.action).to eq("entrada")
+      expect(result.logs.second.action).to eq("entrada")
+      expect(result.logs.last.action).to eq("entrada")
+      end
+
+    it 'many exits' do
+      item = FactoryBot.create(:item, quantity: 20)
+      StockRegister.new(item: item, options: 2).exit
+      StockRegister.new(item: item, options: 2).exit
+      result = StockRegister.new(item: item, options: 2).exit
+
+      expect(result.logs.first.product_name).to eq(item.name)
+      expect(result.logs.second.product_name).to eq(item.name)
+      expect(result.logs.last.product_name).to eq(item.name)
+
+      expect(result.logs.first.quantity).to eq(2)
+      expect(result.logs.second.quantity).to eq(2)
+      expect(result.logs.last.quantity).to eq(2)
+
+      expect(result.logs.first.action).to eq("saída")
+      expect(result.logs.second.action).to eq("saída")
+      expect(result.logs.last.action).to eq("saída")
+    end
+  end
+
   context "when audited" do
     before do
       BusinessTime::Config.end_of_workday = "23:59 pm"
@@ -27,15 +72,14 @@ RSpec.describe StockRegister do
     it 'should not be deleted' do
       item = FactoryBot.create(:item, quantity: 0)
       StockRegister.new(item: item, options: 2).entry
-      item.destroy
-      expect(item.errors.any?).to eq(true)
+
+      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'should no be deleted on exit' do
       item = FactoryBot.create(:item, quantity: 2)
       StockRegister.new(item: item, options: 2).exit
-      item.destroy
-      expect(item.errors.any?).to eq(true)
+      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
   context 'when entry' do
