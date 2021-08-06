@@ -1,5 +1,6 @@
 class ItemsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_current_user, only: [:entry, :exit]
 
   def index
     #@items = Item.all
@@ -52,26 +53,35 @@ class ItemsController < ApplicationController
 
   def entry
     @item = Item.find(params[:id])
-    result = StockRegister.new(item: @item, options: params[:options]).entry
+    result = StockRegister.new(item: @item, options: {quantity: params[:options], user: @user}).entry
     if result
       redirect_to item_path(@item)
+    elsif params[:options].blank?
+      redirect_back fallback_location: items_path
+      flash[:alert] = "A quantidade não pode ser vazia!"
+    elsif params[:options].to_i.zero?
+      redirect_back fallback_location: items_path
+      flash[:alert] = "A quantidade não pode ser zero!"
     else
       redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser vazia nem negativa!"
+      flash[:alert] = "A quantidade não pode ser negativa!"
     end
   end
 
   def exit
     @item = Item.find(params[:id])
-    result = StockRegister.new(item: @item, options: params[:options]).exit
+    result = StockRegister.new(item: @item, options: {quantity: params[:options], user: @user}).exit
     if result
       redirect_to item_path(@item)
     elsif params[:options].blank?
       redirect_back fallback_location: items_path
-      flash[:alert] = "Não se pode retirar items fora do horário comercial!"
+      flash[:alert] = "Erro: campo em branco!"
     elsif params[:options].to_i.negative?
       redirect_back fallback_location: items_path
       flash[:alert] = "Não é permitido quantidade negativa!"
+    elsif params[:options].to_i.zero?
+      redirect_back fallback_location: items_path
+      flash[:alert] = "A quantidade não pode ser zero!"
     else
       redirect_back fallback_location: items_path
       flash[:alert] = "Você está fora do horário comercial!"
@@ -79,6 +89,11 @@ class ItemsController < ApplicationController
   end
 
   private
+
+  def set_current_user
+
+    @user = User.find(current_user[:id])
+  end
 
   def item_params
     params.require(:item).permit(:id, :name, :quantity)
