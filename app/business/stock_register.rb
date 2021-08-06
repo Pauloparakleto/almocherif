@@ -13,7 +13,7 @@ class StockRegister
     unless @item.audited?
       @item.update(audited: true)
     end
-    Log.create(item_id: @item.id, product_name: @item.name, quantity: @options.to_i)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @options.to_i, action: "entrada")
     @item
   end
 
@@ -31,7 +31,7 @@ class StockRegister
 
     @item.update(quantity: sub)
     @item.update(audited: true)
-    Log.create(item_id: @item.id, product_name: @item.name, quantity: @options.to_i)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @options.to_i, action: "saída")
     @item
   end
 end
