@@ -6,6 +6,8 @@ class User < ApplicationRecord
 
   before_destroy :cant_destroy
 
+  has_many :logs
+
   def cant_destroy
     raise ActiveRecord::ActiveRecordError, "Aqui não cidadão!"
   end
