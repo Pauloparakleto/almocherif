@@ -31,7 +31,7 @@ class StockRegister
 
     @item.update(quantity: sub)
     @item.update(audited: true)
-    Log.create(item_id: @item.id, product_name: @item.name, quantity: @item.quantity)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @options.to_i)
     @item
   end
 end
