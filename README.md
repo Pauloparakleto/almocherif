@@ -12,9 +12,9 @@ Será um sistema para controle de almoxarifado com as seguintes funcionalidades:
 - [x] Filtro na lista de material pelo nome
 - [x] Dar entrada no material (material e quantidade)
 - [x] Retirar material (material e quantidade)
-- [ ] Ao adicionar ou retirar material deve ser salvo um log de alterações informando qual o usuário responsável, material e quantidade retirada/adicionada
+- [x] Ao adicionar ou retirar material deve ser salvo um log de alterações informando qual o usuário responsável, material e quantidade retirada/adicionada
 - [x] Tela de lista dos materiais (nome, quantidade (mesmo que 0)
-- [ ] link para um log de entrada/retirada com as informações do log)
+- [x] link para um log de entrada/retirada com as informações do log)
 
 
 ## Requisitos
@@ -24,8 +24,8 @@ Será um sistema para controle de almoxarifado com as seguintes funcionalidades:
 - [x] O nome de um material deve ser único
 - [x] O saldo dos materiais não pode ser negativo
 - [x] A retirada de materiais só pode ser feita entre 9h e 18h de segunda a sexta
-- [ ] Um usuário não pode ser excluído
-- [ ] A Raíz deve ser `/items`. Atualmente, precisa acessar `localhost:3000/items`. **Requisito acrescentado por mim**.
+- [x] Um usuário não pode ser excluído
+- [x] A Raíz deve ser `/items`. Atualmente, precisa acessar `localhost:3000/items`. **Requisito acrescentado por mim**.
 - [x] Pode utilizar qualquer Gem que achar necessário
 - [x] Nome do material deve ser único
 
@@ -63,11 +63,7 @@ on the link and come back to the instructions bellow.
 Run: `rails db:create db:migrate`
 
 Optionally you might populate the database with initial data: `rails db:seed`.
-However, you will not be able to test the create workflow since the delete action is not part of the
-current release.
-
-Any way, you may delete the data to restart the create workflow by running:
-`rails db:drop db:create db:migrate`
+You're gonna have two users, 1) user-sheriff@gmail.com and 2) user-2-sheriff@gmail.com whose passwords are `123456`.
 
 ## Run the server
 Run: `rails webpacker:install`
