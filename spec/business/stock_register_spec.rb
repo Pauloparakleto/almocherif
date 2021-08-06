@@ -3,8 +3,32 @@ require 'rails_helper'
 RSpec.describe StockRegister do
   context "when log register" do
     before do
+      email = Faker::Internet.unique.email
+      email_second = Faker::Internet.unique.email
+      @user = FactoryBot.create(:user, email: email)
+      @user_second = FactoryBot.create(:user, email: email_second)
       BusinessTime::Config.beginning_of_workday = "00:00 am"
       BusinessTime::Config.end_of_workday = "23:59 pm"
+    end
+
+    it "has user entry" do
+      item = FactoryBot.create(:item, quantity: 0)
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
+      result = StockRegister.new(item: item, options: { quantity: 2, user: @user_second }).entry
+
+      expect(result.logs.first.user).to eq(@user)
+      expect(result.logs.second.user).to eq(@user_second)
+
+      end
+
+    it "has user exits" do
+      item = FactoryBot.create(:item, quantity: 10)
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
+      result = StockRegister.new(item: item, options: { quantity: 2, user: @user_second }).exit
+
+      expect(result.logs.first.user).to eq(@user)
+      expect(result.logs.second.user).to eq(@user_second)
+
     end
 
     it 'many entries' do
