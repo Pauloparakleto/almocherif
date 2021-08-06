@@ -52,14 +52,30 @@ class ItemsController < ApplicationController
 
   def entry
     @item = Item.find(params[:id])
-    StockRegister.new(item: @item, options: params[:options]).entry
-    redirect_to item_path(@item)
+    result = StockRegister.new(item: @item, options: params[:options]).entry
+    if result
+      redirect_to item_path(@item)
+    else
+      redirect_back fallback_location: items_path
+      flash[:alert] = "A quantidade não pode ser vazia nem negativa!"
+    end
   end
 
   def exit
     @item = Item.find(params[:id])
-    StockRegister.new(item: @item, options: params[:options]).exit
-    redirect_to item_path(@item)
+    result = StockRegister.new(item: @item, options: params[:options]).exit
+    if result
+      redirect_to item_path(@item)
+    elsif params[:options].blank?
+      redirect_back fallback_location: items_path
+      flash[:alert] = "Não se pode retirar items fora do horário comercial!"
+    elsif params[:options].to_i.negative?
+      redirect_back fallback_location: items_path
+      flash[:alert] = "Não é permitido quantidade negativa!"
+    else
+      redirect_back fallback_location: items_path
+      flash[:alert] = "Você está fora do horário comercial!"
+    end
   end
 
   private
