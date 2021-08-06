@@ -13,7 +13,7 @@ class StockRegister
     unless @item.audited?
       @item.update(audited: true)
     end
-    Log.create(item_id: @item.id, product_name: @item.name, quantity: @item.quantity)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @options.to_i)
     @item
   end
 
