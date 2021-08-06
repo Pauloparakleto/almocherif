@@ -20,6 +20,10 @@ RSpec.describe StockRegister do
       expect(result.logs.first.quantity).to eq(2)
       expect(result.logs.second.quantity).to eq(2)
       expect(result.logs.last.quantity).to eq(2)
+
+      expect(result.logs.first.action).to eq("entrada")
+      expect(result.logs.second.action).to eq("entrada")
+      expect(result.logs.last.action).to eq("entrada")
       end
 
     it 'many exits' do
@@ -35,6 +39,10 @@ RSpec.describe StockRegister do
       expect(result.logs.first.quantity).to eq(2)
       expect(result.logs.second.quantity).to eq(2)
       expect(result.logs.last.quantity).to eq(2)
+
+      expect(result.logs.first.action).to eq("saída")
+      expect(result.logs.second.action).to eq("saída")
+      expect(result.logs.last.action).to eq("saída")
     end
   end
 
