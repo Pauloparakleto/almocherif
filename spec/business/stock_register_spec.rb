@@ -6,19 +6,20 @@ RSpec.describe StockRegister do
       BusinessTime::Config.beginning_of_workday = "00:00 am"
       BusinessTime::Config.end_of_workday = "23:59 pm"
     end
-    it 'entry' do
+
+    it 'many entries' do
       item = FactoryBot.create(:item, quantity: 0)
+      StockRegister.new(item: item, options: 2).entry
+      StockRegister.new(item: item, options: 2).entry
       result = StockRegister.new(item: item, options: 2).entry
-      expect(result.log.product_name).to eq(item.name)
-      expect(result.log.quantity).to eq(item.quantity)
-    end
 
-    it 'exit' do
-      item = FactoryBot.create(:item, quantity: 2)
-      result = StockRegister.new(item: item, options: 2).exit
+      expect(result.logs.first.product_name).to eq(item.name)
+      expect(result.logs.second.product_name).to eq(item.name)
+      expect(result.logs.last.product_name).to eq(item.name)
 
-      expect(result.log.product_name).to eq(item.name)
-      expect(result.log.quantity).to eq(item.quantity)
+      expect(result.logs.first.quantity).to eq(2)
+      expect(result.logs.second.quantity).to eq(2)
+      expect(result.logs.last.quantity).to eq(2)
     end
   end
 
