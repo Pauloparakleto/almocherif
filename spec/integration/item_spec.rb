@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe "Item", type: :request do
+  it 'gets root' do
+    get root_path
+    expect(response).to render_template("items/index")
+    expect(response.status).to eq(200)
+  end
   it 'gets index' do
     get items_path
     expect(response).to render_template("items/index")
