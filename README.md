@@ -7,25 +7,27 @@ Será um sistema para controle de almoxarifado com as seguintes funcionalidades:
 
 ## Funcionalidades:
 
-1. CRUD de materiais: criar, listar, apagar, editar (nome do material)
-2. Lista de materiais deve ter paginação a cada 10 itens
-3. Filtro na lista de material pelo nome
-4. Dar entrada no material (material e quantidade)
-5. Retirar material (material e quantidade)
-6. Ao adicionar ou retirar material deve ser salvo um log de alterações informando qual o usuário responsável, material e quantidade retirada/adicionada
-7. Tela de lista dos materiais (nome, quantidade (mesmo que 0), link para um log de entrada/retirada com as informações do log)
+- [x] CRUD de materiais: criar, listar, apagar, editar (nome do material)
+- [x] Lista de materiais deve ter paginação a cada 10 itens
+- [x] Filtro na lista de material pelo nome
+- [x] Dar entrada no material (material e quantidade)
+- [x] Retirar material (material e quantidade)
+- [ ] Ao adicionar ou retirar material deve ser salvo um log de alterações informando qual o usuário responsável, material e quantidade retirada/adicionada
+- [x] Tela de lista dos materiais (nome, quantidade (mesmo que 0)
+- [ ] link para um log de entrada/retirada com as informações do log)
 
 
 ## Requisitos
 
-1. Projeto deve ser feito utilizando rails 5+
-2. Se um material já tiver qualquer registro de retirada ou entrada não permitir que o mesmo seja excluído
-3. O nome de um material deve ser único
-4. O saldo dos materiais não pode ser negativo
-5. A retirada de materiais só pode ser feita entre 9h e 18h de segunda a sexta
-6. Um usuário não pode ser excluído
-7. Pode utilizar qualquer Gem que achar necessário
-8. Nome do material deve ser único
+- [x] Projeto deve ser feito utilizando rails 5+
+- [x] Se um material já tiver qualquer registro de retirada ou entrada não permitir que o mesmo seja excluído
+- [x] O nome de um material deve ser único
+- [x] O saldo dos materiais não pode ser negativo
+- [x] A retirada de materiais só pode ser feita entre 9h e 18h de segunda a sexta
+- [ ] Um usuário não pode ser excluído
+- [ ] A Raíz deve ser `/items`. Atualmente, precisa acessar `localhost:3000/items`. **Requisito acrescentado por mim**.
+- [x] Pode utilizar qualquer Gem que achar necessário
+- [x] Nome do material deve ser único
 
 ## Observações:
 
