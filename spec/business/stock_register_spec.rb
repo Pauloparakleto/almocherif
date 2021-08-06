@@ -33,9 +33,9 @@ RSpec.describe StockRegister do
 
     it 'many entries' do
       item = FactoryBot.create(:item, quantity: 0)
-      StockRegister.new(item: item, options: 2).entry
-      StockRegister.new(item: item, options: 2).entry
-      result = StockRegister.new(item: item, options: 2).entry
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
+      result = StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
 
       expect(result.logs.first.product_name).to eq(item.name)
       expect(result.logs.second.product_name).to eq(item.name)
@@ -48,13 +48,13 @@ RSpec.describe StockRegister do
       expect(result.logs.first.action).to eq("entrada")
       expect(result.logs.second.action).to eq("entrada")
       expect(result.logs.last.action).to eq("entrada")
-      end
+    end
 
     it 'many exits' do
       item = FactoryBot.create(:item, quantity: 20)
-      StockRegister.new(item: item, options: 2).exit
-      StockRegister.new(item: item, options: 2).exit
-      result = StockRegister.new(item: item, options: 2).exit
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
+      result = StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
 
       expect(result.logs.first.product_name).to eq(item.name)
       expect(result.logs.second.product_name).to eq(item.name)
@@ -74,6 +74,7 @@ RSpec.describe StockRegister do
     before do
       BusinessTime::Config.end_of_workday = "23:59 pm"
       BusinessTime::Config.beginning_of_workday = "00:00 am"
+      @user = FactoryBot.create(:user)
     end
     it 'should be deleted' do
       item = FactoryBot.create(:item, quantity: 0)
@@ -89,27 +90,30 @@ RSpec.describe StockRegister do
 
     it 'should be audited true' do
       item = FactoryBot.create(:item, quantity: 0)
-      StockRegister.new(item: item, options: 2).entry
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
       expect(item.audited?).to eq(true)
     end
 
     it 'should not be deleted' do
       item = FactoryBot.create(:item, quantity: 0)
-      StockRegister.new(item: item, options: 2).entry
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
 
       expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'should no be deleted on exit' do
       item = FactoryBot.create(:item, quantity: 2)
-      StockRegister.new(item: item, options: 2).exit
+      StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
       expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
   context 'when entry' do
+    before do
+      @user = FactoryBot.create(:user)
+    end
     it '2' do
       item = FactoryBot.create(:item, quantity: 0)
-      params = { item: item, options: 2 }
+      params = { item: item, options: { quantity: 2, user: @user } }
       result = StockRegister.new(params).entry
 
       expect(result.quantity).to eq(2)
@@ -117,7 +121,7 @@ RSpec.describe StockRegister do
 
     it 'counting with negative quantity' do
       item = FactoryBot.create(:item, quantity: 2)
-      params = { item: item, options: -2 }
+      params = { item: item, options: { quantity: -2, user: @user } }
       result = StockRegister.new(params).entry
 
       expect(result).to be_nil
@@ -125,7 +129,7 @@ RSpec.describe StockRegister do
 
     it 'with zero quantity' do
       item = FactoryBot.create(:item, quantity: 2)
-      params = { item: item, options: 0 }
+      params = { item: item, options: { quantity: 0, user: @user } }
       result = StockRegister.new(params).entry
 
       expect(result).to be_nil
@@ -138,19 +142,21 @@ RSpec.describe StockRegister do
       BusinessTime::Config.end_of_workday = '15:00 pm'
       @time_now = Time.new(2021, 8, 5, 10)
       allow(Time).to receive(:now).and_return(@time_now)
+      @user = FactoryBot.create(:user)
     end
 
     it '2' do
       item = FactoryBot.create(:item, quantity: 2)
-      params = { item: item, options: 2 }
+      params = { item: item, options: { quantity: 2, user: @user } }
       result = StockRegister.new(params).exit
 
       expect(result.quantity).to eq(0)
     end
 
     it 'whose result would be negative' do
+      @user = FactoryBot.create(:user)
       item = FactoryBot.create(:item, quantity: 0)
-      params = { item: item, options: 2 }
+      params = { item: item, options: { quantity: 2, user: @user } }
       result = StockRegister.new(params).exit
 
       expect(result).to be_nil
@@ -158,7 +164,7 @@ RSpec.describe StockRegister do
 
     it 'counting with negative quantity' do
       item = FactoryBot.create(:item, quantity: 2)
-      params = { item: item, options: -2 }
+      params = { item: item, options: { quantity: -2, user: @user } }
       result = StockRegister.new(params).exit
 
       expect(result).to be_nil
@@ -166,7 +172,7 @@ RSpec.describe StockRegister do
 
     it 'with zero quantity' do
       item = FactoryBot.create(:item, quantity: 2)
-      params = { item: item, options: 0 }
+      params = { item: item, options: { quantity: 0, user: @user } }
       result = StockRegister.new(params).exit
 
       expect(result).to be_nil
@@ -184,7 +190,7 @@ RSpec.describe StockRegister do
 
       it '2' do
         item = FactoryBot.create(:item, quantity: 2)
-        params = { item: item, options: 2 }
+        params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit
 
         expect(result).to be_nil
@@ -201,7 +207,7 @@ RSpec.describe StockRegister do
 
       it '2' do
         item = FactoryBot.create(:item, quantity: 2)
-        params = { item: item, options: 2 }
+        params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit
 
         expect(result).to be_nil
