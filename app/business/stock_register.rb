@@ -10,7 +10,10 @@ class StockRegister
 
     sum = @item.quantity + @options.to_i
     @item.update(quantity: sum)
-    @item.update(audited: true)
+    unless @item.audited?
+      @item.update(audited: true)
+    end
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @item.quantity)
     @item
   end
 
@@ -28,6 +31,7 @@ class StockRegister
 
     @item.update(quantity: sub)
     @item.update(audited: true)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @item.quantity)
     @item
   end
 end
