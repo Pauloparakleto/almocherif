@@ -20,6 +20,21 @@ RSpec.describe StockRegister do
       expect(result.logs.first.quantity).to eq(2)
       expect(result.logs.second.quantity).to eq(2)
       expect(result.logs.last.quantity).to eq(2)
+      end
+
+    it 'many exits' do
+      item = FactoryBot.create(:item, quantity: 20)
+      StockRegister.new(item: item, options: 2).exit
+      StockRegister.new(item: item, options: 2).exit
+      result = StockRegister.new(item: item, options: 2).exit
+
+      expect(result.logs.first.product_name).to eq(item.name)
+      expect(result.logs.second.product_name).to eq(item.name)
+      expect(result.logs.last.product_name).to eq(item.name)
+
+      expect(result.logs.first.quantity).to eq(2)
+      expect(result.logs.second.quantity).to eq(2)
+      expect(result.logs.last.quantity).to eq(2)
     end
   end
 
