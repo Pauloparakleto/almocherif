@@ -1,6 +1,27 @@
 require 'rails_helper'
 
 RSpec.describe StockRegister do
+  context "when log register" do
+    before do
+      BusinessTime::Config.beginning_of_workday = "00:00 am"
+      BusinessTime::Config.end_of_workday = "23:59 pm"
+    end
+    it 'entry' do
+      item = FactoryBot.create(:item, quantity: 0)
+      result = StockRegister.new(item: item, options: 2).entry
+      expect(result.log.product_name).to eq(item.name)
+      expect(result.log.quantity).to eq(item.quantity)
+    end
+
+    it 'exit' do
+      item = FactoryBot.create(:item, quantity: 2)
+      result = StockRegister.new(item: item, options: 2).exit
+
+      expect(result.log.product_name).to eq(item.name)
+      expect(result.log.quantity).to eq(item.quantity)
+    end
+  end
+
   context "when audited" do
     before do
       BusinessTime::Config.end_of_workday = "23:59 pm"
@@ -27,15 +48,14 @@ RSpec.describe StockRegister do
     it 'should not be deleted' do
       item = FactoryBot.create(:item, quantity: 0)
       StockRegister.new(item: item, options: 2).entry
-      item.destroy
-      expect(item.errors.any?).to eq(true)
+
+      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'should no be deleted on exit' do
       item = FactoryBot.create(:item, quantity: 2)
       StockRegister.new(item: item, options: 2).exit
-      item.destroy
-      expect(item.errors.any?).to eq(true)
+      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
   context 'when entry' do
