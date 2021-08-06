@@ -1,6 +1,10 @@
 require 'rails_helper'
 
 RSpec.describe "Item", type: :request do
+  before do
+    @user = FactoryBot.create(:user)
+    sign_in @user
+  end
   it 'gets root' do
     get root_path
     expect(response).to render_template("items/index")
