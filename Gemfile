@@ -47,6 +47,10 @@ group :development, :test do
   gem 'rails-controller-testing'
 end
 
+group :test do
+  gem 'simplecov', require: false
+end
+
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
   gem 'listen', '~> 3.2'
