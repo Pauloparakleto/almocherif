@@ -76,4 +76,7 @@ At least but also important, run the tests: `rspec`
 
 If your integration test fails with webpack misses configuration warnings, run: `rails webpacker:install`
 
+## The test coverage is in 93,6%
+
+![Screenshot from 2021-08-09 11-21-49](https://user-images.githubusercontent.com/52010485/128726977-91dddd9e-697c-4983-838b-a22406ed9962.png)
 
