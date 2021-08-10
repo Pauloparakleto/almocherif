@@ -1,12 +1,16 @@
 require "rails_helper"
 
+def create_users
+  email = Faker::Internet.unique.email
+  email_second = Faker::Internet.unique.email
+  @user = FactoryBot.create(:user, email: email)
+  @user_second = FactoryBot.create(:user, email: email_second)
+end
+
 RSpec.describe StockRegister do
   context "when log register" do
     before do
-      email = Faker::Internet.unique.email
-      email_second = Faker::Internet.unique.email
-      @user = FactoryBot.create(:user, email: email)
-      @user_second = FactoryBot.create(:user, email: email_second)
+      create_users
       BusinessTime::Config.beginning_of_workday = "00:00 am"
       BusinessTime::Config.end_of_workday = "23:59 pm"
     end
