@@ -33,13 +33,4 @@ RSpec.describe Item, type: :model do
     expect(item.name).to eq("Flash Driver")
     expect(name).not_to eq(item.name)
   end
-
-  xit "should not update quantity" do
-    item = FactoryBot.create(:item, quantity: 30)
-
-    item.update(quantity: 15)
-
-    expect(item.valid?).to eq(false)
-    expect(item.errors.messages[:quantity].first).to eq("Você não pode atualizar quantidade a não ser mediante entrada e saída de itens!")
-  end
 end
