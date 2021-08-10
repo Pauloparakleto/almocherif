@@ -6,7 +6,7 @@ class Item < ApplicationRecord
   has_many :logs
 
   def can_destroy
-    if self.audited?
+    if audited?
       errors.add(:base, :invalid, message: "Message here")
       raise ActiveRecord::RecordInvalid
     end

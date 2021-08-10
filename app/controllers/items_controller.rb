@@ -3,7 +3,7 @@ class ItemsController < ApplicationController
   before_action :set_current_user, only: [:entry, :exit]
 
   def index
-    #@items = Item.all
+    # @items = Item.all
     @q = Item.ransack(params[:q])
     @items = @q.result(distinct: true).page params[:page]
   end
@@ -41,19 +41,19 @@ class ItemsController < ApplicationController
 
   def destroy
     @item = Item.find(params[:id])
-    unless @item.audited?
+    if @item.audited?
+      redirect_back fallback_location: items_path
+      flash[:alert] = "Não pode deletar o item, pois já está com movimentação no registro!"
+    else
       @item.destroy
       redirect_to items_path
       flash[:notice] = "Item deletado com sucesso!"
-    else
-      redirect_back fallback_location: items_path
-      flash[:alert] = "Não pode deletar o item, pois já está com movimentação no registro!"
     end
   end
 
   def entry
     @item = Item.find(params[:id])
-    result = StockRegister.new(item: @item, options: {quantity: params[:options], user: @user}).entry
+    result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).entry
     if result
       redirect_to item_path(@item)
     elsif params[:options].blank?
@@ -70,7 +70,7 @@ class ItemsController < ApplicationController
 
   def exit
     @item = Item.find(params[:id])
-    result = StockRegister.new(item: @item, options: {quantity: params[:options], user: @user}).exit
+    result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).exit
     if result
       redirect_to item_path(@item)
     elsif params[:options].blank?
@@ -91,7 +91,6 @@ class ItemsController < ApplicationController
   private
 
   def set_current_user
-
     @user = User.find(current_user[:id])
   end
 

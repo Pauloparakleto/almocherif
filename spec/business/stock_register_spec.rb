@@ -1,4 +1,4 @@
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe StockRegister do
   context "when log register" do
@@ -18,8 +18,7 @@ RSpec.describe StockRegister do
 
       expect(result.logs.first.user).to eq(@user)
       expect(result.logs.second.user).to eq(@user_second)
-
-      end
+    end
 
     it "has user exits" do
       item = FactoryBot.create(:item, quantity: 10)
@@ -28,10 +27,9 @@ RSpec.describe StockRegister do
 
       expect(result.logs.first.user).to eq(@user)
       expect(result.logs.second.user).to eq(@user_second)
-
     end
 
-    it 'many entries' do
+    it "many entries" do
       item = FactoryBot.create(:item, quantity: 0)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
@@ -50,7 +48,7 @@ RSpec.describe StockRegister do
       expect(result.logs.last.action).to eq("entrada")
     end
 
-    it 'many exits' do
+    it "many exits" do
       item = FactoryBot.create(:item, quantity: 20)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
@@ -76,42 +74,42 @@ RSpec.describe StockRegister do
       BusinessTime::Config.beginning_of_workday = "00:00 am"
       @user = FactoryBot.create(:user)
     end
-    it 'should be deleted' do
+    it "should be deleted" do
       item = FactoryBot.create(:item, quantity: 0)
       item.delete
       expect(Item.count).to eq(0)
     end
 
-    it 'should be audited false' do
+    it "should be audited false" do
       item = FactoryBot.create(:item, quantity: 0)
 
       expect(item.audited?).to eq(false)
     end
 
-    it 'should be audited true' do
+    it "should be audited true" do
       item = FactoryBot.create(:item, quantity: 0)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
       expect(item.audited?).to eq(true)
     end
 
-    it 'should not be deleted' do
+    it "should not be deleted" do
       item = FactoryBot.create(:item, quantity: 0)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
 
       expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
-    it 'should no be deleted on exit' do
+    it "should no be deleted on exit" do
       item = FactoryBot.create(:item, quantity: 2)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
       expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
-  context 'when entry' do
+  context "when entry" do
     before do
       @user = FactoryBot.create(:user)
     end
-    it '2' do
+    it "2" do
       item = FactoryBot.create(:item, quantity: 0)
       params = { item: item, options: { quantity: 2, user: @user } }
       result = StockRegister.new(params).entry
@@ -119,7 +117,7 @@ RSpec.describe StockRegister do
       expect(result.quantity).to eq(2)
     end
 
-    it 'counting with negative quantity' do
+    it "counting with negative quantity" do
       item = FactoryBot.create(:item, quantity: 2)
       params = { item: item, options: { quantity: -2, user: @user } }
       result = StockRegister.new(params).entry
@@ -127,7 +125,7 @@ RSpec.describe StockRegister do
       expect(result).to be_nil
     end
 
-    it 'with zero quantity' do
+    it "with zero quantity" do
       item = FactoryBot.create(:item, quantity: 2)
       params = { item: item, options: { quantity: 0, user: @user } }
       result = StockRegister.new(params).entry
@@ -136,16 +134,16 @@ RSpec.describe StockRegister do
     end
   end
 
-  context 'when exit' do
+  context "when exit" do
     before do
-      BusinessTime::Config.beginning_of_workday = '6:00 am'
-      BusinessTime::Config.end_of_workday = '15:00 pm'
-      @time_now = Time.new(2021, 8, 5, 10)
+      BusinessTime::Config.beginning_of_workday = "6:00 am"
+      BusinessTime::Config.end_of_workday = "15:00 pm"
+      @time_now = Time.zone.local(2021, 8, 5, 10)
       allow(Time).to receive(:now).and_return(@time_now)
       @user = FactoryBot.create(:user)
     end
 
-    it '2' do
+    it "2" do
       item = FactoryBot.create(:item, quantity: 2)
       params = { item: item, options: { quantity: 2, user: @user } }
       result = StockRegister.new(params).exit
@@ -153,7 +151,7 @@ RSpec.describe StockRegister do
       expect(result.quantity).to eq(0)
     end
 
-    it 'whose result would be negative' do
+    it "whose result would be negative" do
       @user = FactoryBot.create(:user)
       item = FactoryBot.create(:item, quantity: 0)
       params = { item: item, options: { quantity: 2, user: @user } }
@@ -162,7 +160,7 @@ RSpec.describe StockRegister do
       expect(result).to be_nil
     end
 
-    it 'counting with negative quantity' do
+    it "counting with negative quantity" do
       item = FactoryBot.create(:item, quantity: 2)
       params = { item: item, options: { quantity: -2, user: @user } }
       result = StockRegister.new(params).exit
@@ -170,7 +168,7 @@ RSpec.describe StockRegister do
       expect(result).to be_nil
     end
 
-    it 'with zero quantity' do
+    it "with zero quantity" do
       item = FactoryBot.create(:item, quantity: 2)
       params = { item: item, options: { quantity: 0, user: @user } }
       result = StockRegister.new(params).exit
@@ -179,16 +177,16 @@ RSpec.describe StockRegister do
     end
   end
 
-  describe 'out of business time' do
-    context 'when exit' do
+  describe "out of business time" do
+    context "when exit" do
       before do
-        BusinessTime::Config.beginning_of_workday = '9:00 am'
-        BusinessTime::Config.end_of_workday = '18:00 pm'
-        @time_now = Time.new(2021, 8, 5, 5)
+        BusinessTime::Config.beginning_of_workday = "9:00 am"
+        BusinessTime::Config.end_of_workday = "18:00 pm"
+        @time_now = Time.zone.local(2021, 8, 5, 5)
         allow(Time).to receive(:now).and_return(@time_now)
       end
 
-      it '2' do
+      it "2" do
         item = FactoryBot.create(:item, quantity: 2)
         params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit
@@ -197,15 +195,15 @@ RSpec.describe StockRegister do
       end
     end
 
-    context 'when exit on weekend' do
+    context "when exit on weekend" do
       before do
-        BusinessTime::Config.beginning_of_workday = '9:00 am'
-        BusinessTime::Config.end_of_workday = '18:00 pm'
-        @time_now = Time.new(2021, 8, 1)
+        BusinessTime::Config.beginning_of_workday = "9:00 am"
+        BusinessTime::Config.end_of_workday = "18:00 pm"
+        @time_now = Time.zone.local(2021, 8, 1)
         allow(Time).to receive(:now).and_return(@time_now)
       end
 
-      it '2' do
+      it "2" do
         item = FactoryBot.create(:item, quantity: 2)
         params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit

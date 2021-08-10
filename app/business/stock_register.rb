@@ -15,14 +15,15 @@ class StockRegister
     unless @item.audited?
       @item.update(audited: true)
     end
-    Log.create(item_id: @item.id, product_name: @item.name, quantity: @quantity.to_i, action: "entrada", user_id: @user.id)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @quantity.to_i, action: "entrada",
+               user_id: @user.id)
     @item
   end
 
   def exit
-    return nil if !Time.now.workday?
+    return nil unless Time.zone.now.workday?
 
-    return nil if !Time.now.during_business_hours?
+    return nil unless Time.zone.now.during_business_hours?
 
     return nil if @quantity.to_i.negative?
 
@@ -33,7 +34,8 @@ class StockRegister
 
     @item.update(quantity: sub)
     @item.update(audited: true)
-    Log.create(item_id: @item.id, product_name: @item.name, quantity: @quantity.to_i, action: "saída", user_id: @user.id)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: @quantity.to_i, action: "saída",
+               user_id: @user.id)
     @item
   end
 end
