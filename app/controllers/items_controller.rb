@@ -43,28 +43,32 @@ class ItemsController < ApplicationController
 
   def destroy
     @item = Item.find(params[:id])
+    redirect_on_destroy
+  end
+
+  def redirect_on_destroy
     if @item.audited?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "Não pode deletar o item, pois já está com movimentação no registro!"
+      canto_destroy_message
     else
-      @item.destroy
-      redirect_to items_path
-      flash[:notice] = "Item deletado com sucesso!"
+      destroyed_sucessfull_message
     end
+  end
+
+  def destroyed_sucessfull_message
+    @item.destroy
+    redirect_to items_path
+    flash[:notice] = "Item deletado com sucesso!"
+  end
+
+  def canto_destroy_message
+    redirect_back fallback_location: items_path
+    flash[:alert] = "Não pode deletar o item, pois já está com movimentação no registro!"
   end
 
   def entry
     @item = Item.find(params[:id])
     result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).entry
-    if result
-      redirect_to item_path(@item)
-    elsif params[:options].blank?
-      redirect_cant_blank
-    elsif params[:options].to_i.zero?
-      redirect_show_cant_zero
-    else
-      redirect_show_cant_negative
-    end
+    redirect_on_entry(result)
   end
 
   def exit
