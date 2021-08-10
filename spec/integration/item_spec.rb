@@ -1,4 +1,5 @@
 require "rails_helper"
+require "item_controller_helper"
 
 RSpec.describe "Item", type: :request do
   before do
