@@ -7,6 +7,13 @@ module ItemControllerHelper
     end
   end
 
+  def redirect_on_entry(result)
+    redirect_to item_path(@item) if result
+    redirect_cant_blank if params[:options].blank?
+    redirect_show_cant_zero if params[:options].to_i.zero?
+    redirect_show_cant_negative if params[:options].to_i.negative?
+  end
+
   def redirect_cant_blank
     redirect_back fallback_location: items_path
     flash[:alert] = "A quantidade não pode ser vazia!"
