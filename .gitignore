@@ -45,3 +45,5 @@
 yarn-debug.log*
 .yarn-integrity
 /.idea/almocherif.iml
+/db/schema.rb
+coverage
