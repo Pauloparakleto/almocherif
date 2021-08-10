@@ -1,4 +1,6 @@
+require "item_controller_helper"
 class ItemsController < ApplicationController
+  include ItemControllerHelper
   before_action :authenticate_user!
   before_action :set_current_user, only: [:entry, :exit]
 
@@ -18,6 +20,10 @@ class ItemsController < ApplicationController
 
   def create
     @item = Item.create(item_params)
+    redirect_or_render
+  end
+
+  def redirect_or_render
     if @item.valid?
       redirect_to @item
     else
@@ -32,11 +38,7 @@ class ItemsController < ApplicationController
   def update
     @item = Item.find(params[:id])
 
-    if @item.update(item_params_update)
-      redirect_to item_path @item
-    else
-      render :edit
-    end
+    redirect_or_render_update
   end
 
   def destroy
@@ -57,35 +59,18 @@ class ItemsController < ApplicationController
     if result
       redirect_to item_path(@item)
     elsif params[:options].blank?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser vazia!"
+      redirect_cant_blank
     elsif params[:options].to_i.zero?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser zero!"
+      redirect_show_cant_zero
     else
-      redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser negativa!"
+      redirect_show_cant_negative
     end
   end
 
   def exit
     @item = Item.find(params[:id])
     result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).exit
-    if result
-      redirect_to item_path(@item)
-    elsif params[:options].blank?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "Erro: campo em branco!"
-    elsif params[:options].to_i.negative?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "Não é permitido quantidade negativa!"
-    elsif params[:options].to_i.zero?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser zero!"
-    else
-      redirect_back fallback_location: items_path
-      flash[:alert] = "Você está fora do horário comercial!"
-    end
+    redirect_show_message(result)
   end
 
   private
@@ -96,9 +81,5 @@ class ItemsController < ApplicationController
 
   def item_params
     params.require(:item).permit(:id, :name, :quantity)
-  end
-
-  def item_params_update
-    params.require(:item).permit(:name)
   end
 end
