@@ -29,20 +29,24 @@ class StockRegister
 
   def exit
 
-    return nil if !Time.now.workday?
+    return nil if !time_now.workday?
 
-    return nil if !Time.now.during_business_hours?
+    return nil if !time_now.during_business_hours?
 
-    return nil if @quantity.to_i.negative?
+    return nil if set_quantity.negative?
 
-    return nil if @quantity.to_i.zero?
+    return nil if set_quantity.zero?
 
-    sub = @item.quantity - @quantity.to_i
+    sub = @item.quantity - set_quantity
     return nil if sub.negative?
 
     @item.update(quantity: sub)
     @item.update(audited: true)
-    Log.create(item_id: @item.id, product_name: @item.name, quantity: @quantity.to_i, action: "saída", user_id: @user.id)
+    Log.create(item_id: @item.id, product_name: @item.name, quantity: set_quantity, action: "saída", user_id: @user.id)
     @item
+  end
+
+  def time_now
+    Time.now
   end
 end
