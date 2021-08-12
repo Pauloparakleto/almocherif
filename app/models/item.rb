@@ -1,5 +1,6 @@
 class Item < ApplicationRecord
   validates :name, uniqueness: { message: "Este nome já está em uso!" }
+  validates_with StockRegisterValidator
   before_destroy :can_destroy
   paginates_per 10
 
