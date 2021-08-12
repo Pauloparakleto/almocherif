@@ -47,3 +47,4 @@ yarn-debug.log*
 /.idea/almocherif.iml
 /db/schema.rb
 coverage
+/.idea/misc.xml
