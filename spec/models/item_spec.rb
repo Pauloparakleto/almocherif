@@ -34,12 +34,12 @@ RSpec.describe Item, type: :model do
     expect(name).not_to eq(item.name)
   end
 
-  xit 'should not update quantity' do
+  it 'should not update to negative quantity' do
     item = FactoryBot.create(:item, quantity: 30)
 
-    item.update(quantity: 15)
+    item.update(quantity: -15)
 
     expect(item.valid?).to eq(false)
-    expect(item.errors.messages[:quantity].first).to eq("Você não pode atualizar quantidade a não ser mediante entrada e saída de itens!")
+    expect(item.errors[:base]).to eq(["A quantidade retirada é superior ao estoque!"])
   end
 end
