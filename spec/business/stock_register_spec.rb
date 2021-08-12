@@ -19,7 +19,7 @@ RSpec.describe StockRegister do
       expect(result.logs.first.user).to eq(@user)
       expect(result.logs.second.user).to eq(@user_second)
 
-      end
+    end
 
     it "has user exits" do
       item = FactoryBot.create(:item, quantity: 10)
@@ -153,13 +153,13 @@ RSpec.describe StockRegister do
       expect(result.quantity).to eq(0)
     end
 
-    it 'whose result would be negative' do
+    xit 'whose result would be negative' do
       @user = FactoryBot.create(:user)
       item = FactoryBot.create(:item, quantity: 0)
       params = { item: item, options: { quantity: 2, user: @user } }
-      result = StockRegister.new(params).exit
 
-      expect(result).to be_nil
+      expect { StockRegister.new(params).exit }
+        .to raise_error(ActionController::BadRequest).with_message("Erro: O resultado desta retirada seria negativo!")
     end
 
     it 'counting with negative quantity' do
