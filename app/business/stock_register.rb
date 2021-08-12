@@ -36,8 +36,6 @@ class StockRegister
     return nil if check_business_time
 
     sub = @item.quantity - set_quantity
-    return nil if sub.negative?
-
     update_stock_exit(sub)
   end
 
