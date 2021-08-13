@@ -7,7 +7,7 @@ class StockRegister
 
   def initialize(item: nil, options: nil)
     @item = item
-    @time_now = StockRegisterSupport.time_now
+    @time_now = Time.now
     @quantity = options[:quantity]
     @user = options[:user]
   end
@@ -65,14 +65,15 @@ class StockRegister
   end
 
   def check_business_time
-    if !time_now.workday?
+    unless Date.today.workday?
       @item.errors.add :base, "Você está fora do dia de trabalho!"
       @item
     end
-    if !time_now.during_business_hours?
+    unless time_now.during_business_hours?
       @item.errors.add :base, "Você está fora da hora de trabalho!"
       @item
     end
+    @item
   end
 
   def create_log(type)
