@@ -53,7 +53,7 @@ class ItemsController < ApplicationController
 
   def entry
     @item = Item.find(params[:id])
-    result = StockRegister.new(item: @item, options: {quantity: params[:options], user: @user}).entry
+    result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).entry
     if result
       redirect_to item_path(@item)
     elsif params[:options].blank?
@@ -70,9 +70,16 @@ class ItemsController < ApplicationController
 
   def exit
     @item = Item.find(params[:id])
-    result = StockRegister.new(item: @item, options: {quantity: params[:options], user: @user}).exit
-    if result
+    result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).exit
+    if result.valid?
       redirect_to item_path(@item)
+    else
+      flash[:alert] = result.errors[:base]
+      redirect_back fallback_location: items_path
+    end
+  end
+
+=begin
     elsif params[:options].blank?
       redirect_back fallback_location: items_path
       flash[:alert] = "Erro: campo em branco!"
@@ -85,8 +92,8 @@ class ItemsController < ApplicationController
     else
       redirect_back fallback_location: items_path
       flash[:alert] = "Você está fora do horário comercial!"
-    end
-  end
+     end
+=end
 
   private
 
