@@ -10,4 +10,13 @@ RSpec.describe "Log", type: :request do
     expect(response).to render_template("logs/index")
     expect(response.status).to eq(200)
   end
+
+  it 'gets show' do
+    item = FactoryBot.create(:item)
+    FactoryBot.create(:log, user: @user, item_id: item.id)
+    log = FactoryBot.create(:log, user: @user, item_id: item.id)
+    get log_path(log.id)
+    expect(response).to render_template("logs/show")
+    expect(response.status).to eq(200)
+  end
 end
