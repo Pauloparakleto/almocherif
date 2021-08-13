@@ -1,22 +1,21 @@
-<h1>Log de Movimentações</h1>
-<%= link_to "Lista do Estoque", items_path %>
+<h1>Log de Movimentações de: <%= @logs.first.product_name %></h1>
+<li><%= link_to "Lista do Estoque", items_path %></li>
+
+<li><%= link_to "Todos as movimentações", logs_path %></li>
+
 
 <section>
   <table>
     <tr>
       <th>Email do Usuário</th>
-      <th>Nome do Produto</th>
       <th>Quantidade movimentada</th>
       <th>Ação</th>
-      <th>Detalhar</th>
     </tr>
     <% @logs.each do |log| %>
       <tr>
         <td><%= log.user.email %></td>
-        <td><%= log.product_name %></td>
         <td><%= log.quantity %></td>
         <td><%= log.action %></td>
-        <td><%= link_to "Detalhar", log_path(log.id) %></td>
       </tr>
     <% end %>
   </table>
