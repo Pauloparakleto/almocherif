@@ -9,7 +9,7 @@ class Item < ApplicationRecord
   def can_destroy
     if self.audited?
       errors.add(:base, :invalid, message: "Message here")
-      raise ActiveRecord::RecordInvalid
+      #raise ActiveRecord::RecordInvalid
     end
   end
 end
