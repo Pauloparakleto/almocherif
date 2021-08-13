@@ -8,6 +8,7 @@
       <th>Nome do Produto</th>
       <th>Quantidade movimentada</th>
       <th>Ação</th>
+      <th>Detalhar</th>
     </tr>
     <% @logs.each do |log| %>
       <tr>
@@ -15,6 +16,7 @@
         <td><%= log.product_name %></td>
         <td><%= log.quantity %></td>
         <td><%= log.action %></td>
+        <td><%= link_to "Detalhar", log_path(log.id) %></td>
       </tr>
     <% end %>
   </table>
