@@ -34,7 +34,9 @@
 <body>
 <section>
   <% if flash[:alert] %>
-    <h2> <%= flash[:alert] %></h2>
+    <% flash[:alert].each do |message| %>
+      <h2> <%= message %></h2>
+    <% end %>
   <% end %>
   <% if flash[:notice] %>
     <h2> <%= flash[:notice] %></h2>
