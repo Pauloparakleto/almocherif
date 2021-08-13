@@ -4,12 +4,14 @@
 class StockRegister
   attr_reader :quantity
   attr_reader :time_now
+
   def initialize(item: nil, options: nil)
     @item = item
     @time_now = StockRegisterSupport.time_now
     @quantity = options[:quantity]
     @user = options[:user]
   end
+
   def set_quantity
     quantity.to_i
   end
@@ -32,8 +34,8 @@ class StockRegister
   end
 
   def exit
-
-    return nil if check_business_time
+    check_business_time
+    return @item if @item.errors.any?
 
     check_quantity(set_quantity)
     return @item if @item.errors.any?
@@ -63,7 +65,14 @@ class StockRegister
   end
 
   def check_business_time
-    !time_now.workday? || !time_now.during_business_hours?
+    if !time_now.workday?
+      @item.errors.add :base, "Você está fora do dia de trabalho!"
+      @item
+    end
+    if !time_now.during_business_hours?
+      @item.errors.add :base, "Você está fora da hora de trabalho!"
+      @item
+    end
   end
 
   def create_log(type)
