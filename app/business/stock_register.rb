@@ -17,8 +17,8 @@ class StockRegister
   end
 
   def entry
-    set_quantity
-    return nil if set_quantity.negative? || set_quantity.zero?
+    check_quantity(set_quantity)
+    return @item if @item.errors.any?
 
     sum = @item.quantity + set_quantity
     update_stock_on_entry(sum)
@@ -57,10 +57,10 @@ class StockRegister
 
   def update_stock_exit(sub)
     @item.update(quantity: sub)
-    if @item.update(quantity: sub)
+    unless @item.audited?
       @item.update(audited: true)
-      create_log("saída")
     end
+    create_log("saída")
     @item
   end
 
