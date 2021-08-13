@@ -176,7 +176,8 @@ RSpec.describe StockRegister do
       params = { item: item, options: { quantity: 0, user: @user } }
       result = StockRegister.new(params).exit
 
-      expect(result).to be_nil
+      expect(result.errors.any?).to eq(true)
+      expect(result.errors[:base]).to eq(["A quantidade não pode ser zero!"])
     end
   end
 
