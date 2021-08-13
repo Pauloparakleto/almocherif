@@ -35,19 +35,35 @@ class StockRegister
 
     return nil if check_business_time
 
+    check_quantity(set_quantity)
+    return @item if @item.errors.any?
+
     sub = @item.quantity - set_quantity
     update_stock_exit(sub)
   end
 
+  def check_quantity(quantity)
+    if quantity.negative?
+      @item.errors.add :base, "A quantidade não pode ser negativa!"
+      @item
+    end
+    if quantity.zero?
+      @item.errors.add :base, "A quantidade não pode ser zero!"
+      @item
+    end
+  end
+
   def update_stock_exit(sub)
     @item.update(quantity: sub)
-    @item.update(audited: true)
-    create_log("saída")
+    if @item.update(quantity: sub)
+      @item.update(audited: true)
+      create_log("saída")
+    end
     @item
   end
 
   def check_business_time
-    !time_now.workday? || !time_now.during_business_hours? || set_quantity.negative? || set_quantity.zero?
+    !time_now.workday? || !time_now.during_business_hours?
   end
 
   def create_log(type)
