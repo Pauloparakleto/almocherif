@@ -195,7 +195,8 @@ RSpec.describe StockRegister do
         params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit
 
-        expect(result).to be_nil
+        expect(result.errors.any?).to eq(true)
+        expect(result.errors[:base]).to eq(["Você está fora da hora de trabalho!"])
       end
     end
 
@@ -212,7 +213,8 @@ RSpec.describe StockRegister do
         params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit
 
-        expect(result).to be_nil
+        expect(result.errors.any?).to eq(true)
+        expect(result.errors[:base]).to eq(["Você está fora do dia de trabalho!"])
       end
     end
   end
