@@ -207,7 +207,9 @@ RSpec.describe StockRegister do
         BusinessTime::Config.beginning_of_workday = '9:00 am'
         BusinessTime::Config.end_of_workday = '18:00 pm'
         @date = Date.parse("2021-08-01")
+        @time = Time.parse("10:00 am")
         allow(Date).to receive(:today).and_return(@date)
+        allow(Time).to receive(:now).and_return(@time)
       end
 
       it '2' do
