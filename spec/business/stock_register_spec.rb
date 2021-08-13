@@ -19,7 +19,7 @@ RSpec.describe StockRegister do
       expect(result.logs.first.user).to eq(@user)
       expect(result.logs.second.user).to eq(@user_second)
 
-      end
+    end
 
     it "has user exits" do
       item = FactoryBot.create(:item, quantity: 10)
@@ -98,13 +98,13 @@ RSpec.describe StockRegister do
       item = FactoryBot.create(:item, quantity: 0)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
 
-      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { item.destroy }.to raise_error(ActiveRecord::InvalidForeignKey)
     end
 
     it 'should no be deleted on exit' do
       item = FactoryBot.create(:item, quantity: 2)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
-      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { item.destroy }.to raise_error(ActiveRecord::InvalidForeignKey)
     end
   end
   context 'when entry' do
@@ -124,7 +124,8 @@ RSpec.describe StockRegister do
       params = { item: item, options: { quantity: -2, user: @user } }
       result = StockRegister.new(params).entry
 
-      expect(result).to be_nil
+      expect(result.errors.any?).to eq(true)
+      expect(result.errors[:base]).to eq(["A quantidade não pode ser negativa!"])
     end
 
     it 'with zero quantity' do
@@ -132,7 +133,8 @@ RSpec.describe StockRegister do
       params = { item: item, options: { quantity: 0, user: @user } }
       result = StockRegister.new(params).entry
 
-      expect(result).to be_nil
+      expect(result.errors.any?).to eq(true)
+      expect(result.errors[:base]).to eq(["A quantidade não pode ser zero!"])
     end
   end
 
@@ -153,13 +155,13 @@ RSpec.describe StockRegister do
       expect(result.quantity).to eq(0)
     end
 
-    it 'whose result would be negative' do
+    xit 'whose result would be negative' do
       @user = FactoryBot.create(:user)
       item = FactoryBot.create(:item, quantity: 0)
       params = { item: item, options: { quantity: 2, user: @user } }
-      result = StockRegister.new(params).exit
 
-      expect(result).to be_nil
+      expect { StockRegister.new(params).exit }
+        .to raise_error(ActionController::BadRequest).with_message("Erro: O resultado desta retirada seria negativo!")
     end
 
     it 'counting with negative quantity' do
@@ -167,7 +169,8 @@ RSpec.describe StockRegister do
       params = { item: item, options: { quantity: -2, user: @user } }
       result = StockRegister.new(params).exit
 
-      expect(result).to be_nil
+      expect(result.errors.any?).to eq(true)
+      expect(result.errors[:base]).to eq(["A quantidade não pode ser negativa!"])
     end
 
     it 'with zero quantity' do
@@ -175,7 +178,8 @@ RSpec.describe StockRegister do
       params = { item: item, options: { quantity: 0, user: @user } }
       result = StockRegister.new(params).exit
 
-      expect(result).to be_nil
+      expect(result.errors.any?).to eq(true)
+      expect(result.errors[:base]).to eq(["A quantidade não pode ser zero!"])
     end
   end
 
@@ -193,7 +197,8 @@ RSpec.describe StockRegister do
         params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit
 
-        expect(result).to be_nil
+        expect(result.errors.any?).to eq(true)
+        expect(result.errors[:base]).to eq(["Você está fora da hora de trabalho!"])
       end
     end
 
@@ -201,8 +206,10 @@ RSpec.describe StockRegister do
       before do
         BusinessTime::Config.beginning_of_workday = '9:00 am'
         BusinessTime::Config.end_of_workday = '18:00 pm'
-        @time_now = Time.new(2021, 8, 1)
-        allow(Time).to receive(:now).and_return(@time_now)
+        @date = Date.parse("2021-08-01")
+        @time = Time.parse("10:00 am")
+        allow(Date).to receive(:today).and_return(@date)
+        allow(Time).to receive(:now).and_return(@time)
       end
 
       it '2' do
@@ -210,7 +217,8 @@ RSpec.describe StockRegister do
         params = { item: item, options: { quantity: 2, user: @user } }
         result = StockRegister.new(params).exit
 
-        expect(result).to be_nil
+        expect(result.errors.any?).to eq(true)
+        expect(result.errors[:base]).to eq(["Você está fora do dia de trabalho!"])
       end
     end
   end

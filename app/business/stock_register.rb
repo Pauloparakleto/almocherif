@@ -4,19 +4,21 @@
 class StockRegister
   attr_reader :quantity
   attr_reader :time_now
+
   def initialize(item: nil, options: nil)
     @item = item
-    @time_now = StockRegisterSupport.time_now
+    @time_now = Time.now
     @quantity = options[:quantity]
     @user = options[:user]
   end
+
   def set_quantity
     quantity.to_i
   end
 
   def entry
-    set_quantity
-    return nil if set_quantity.negative? || set_quantity.zero?
+    check_quantity(set_quantity)
+    return @item if @item.errors.any?
 
     sum = @item.quantity + set_quantity
     update_stock_on_entry(sum)
@@ -32,24 +34,46 @@ class StockRegister
   end
 
   def exit
+    check_business_time
+    return @item if @item.errors.any?
 
-    return nil if check_business_time
+    check_quantity(set_quantity)
+    return @item if @item.errors.any?
 
     sub = @item.quantity - set_quantity
-    return nil if sub.negative?
-
     update_stock_exit(sub)
+  end
+
+  def check_quantity(quantity)
+    if quantity.negative?
+      @item.errors.add :base, "A quantidade não pode ser negativa!"
+      @item
+    end
+    if quantity.zero?
+      @item.errors.add :base, "A quantidade não pode ser zero!"
+      @item
+    end
   end
 
   def update_stock_exit(sub)
     @item.update(quantity: sub)
-    @item.update(audited: true)
+    unless @item.audited?
+      @item.update(audited: true)
+    end
     create_log("saída")
     @item
   end
 
   def check_business_time
-    !time_now.workday? || !time_now.during_business_hours? || set_quantity.negative? || set_quantity.zero?
+    unless Date.today.workday?
+      @item.errors.add :base, "Você está fora do dia de trabalho!"
+      @item
+    end
+    unless time_now.during_business_hours?
+      @item.errors.add :base, "Você está fora da hora de trabalho!"
+      @item
+    end
+    @item
   end
 
   def create_log(type)
