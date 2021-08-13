@@ -98,13 +98,13 @@ RSpec.describe StockRegister do
       item = FactoryBot.create(:item, quantity: 0)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).entry
 
-      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { item.destroy }.to raise_error(ActiveRecord::InvalidForeignKey)
     end
 
     it 'should no be deleted on exit' do
       item = FactoryBot.create(:item, quantity: 2)
       StockRegister.new(item: item, options: { quantity: 2, user: @user }).exit
-      expect { item.destroy }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { item.destroy }.to raise_error(ActiveRecord::InvalidForeignKey)
     end
   end
   context 'when entry' do
