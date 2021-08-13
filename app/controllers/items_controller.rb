@@ -54,27 +54,23 @@ class ItemsController < ApplicationController
   def entry
     @item = Item.find(params[:id])
     result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).entry
-    if result
+    unless result.errors.any?
+      flash[:notice] = "Quantidade acrescida com sucesso!"
       redirect_to item_path(@item)
-    elsif params[:options].blank?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser vazia!"
-    elsif params[:options].to_i.zero?
-      redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser zero!"
     else
+      flash[:alert] = result.errors.full_messages.first
       redirect_back fallback_location: items_path
-      flash[:alert] = "A quantidade não pode ser negativa!"
     end
   end
 
   def exit
     @item = Item.find(params[:id])
     result = StockRegister.new(item: @item, options: { quantity: params[:options], user: @user }).exit
-    if result.valid?
+    unless result.errors.any?
+      flash[:notice] = "Quantidade retidada com sucesso!"
       redirect_to item_path(@item)
     else
-      flash[:alert] = result.errors[:base]
+      flash[:alert] = result.errors.full_messages.first
       redirect_back fallback_location: items_path
     end
   end
